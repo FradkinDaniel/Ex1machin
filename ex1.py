@@ -43,4 +43,16 @@ def load_data():
 if __name__ == '__main__':
     matrixs = load_data()
     select_single(matrixs[0],1)
+def  predictValue(Example, Hypothesis):
+    predicion = list
+    v=0
+    for i in range (1,Example.__len__()):
+        for j in range(1,Example[i].__len__()):
+            v+= Hypothesis[i][j]*Example[i][j]
+        predicion.append(v)
+    return predicion
+
+
+
+
 
