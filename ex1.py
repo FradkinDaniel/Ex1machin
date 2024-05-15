@@ -52,6 +52,7 @@ def  predictValue(Example, Hypothesis):
         predicion.append(v)
     return predicion
 
+def computeErrors (Data, Y, Hypothesis):
 
 
 
