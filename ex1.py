@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 
-def load_data():
+def load_data(filename):
     matrixD = []
     matrixY = []
-    f = open('smartphone.txt', 'r')
+    f = open(filename, 'r')
 
     while True:
         line = f.readline()
@@ -20,20 +20,21 @@ def load_data():
 
 # alpha = 0.1 is optimal for feature 1 (no scaling)
 # alpha = 1.4 with scaling is optimal for feature 0 (converges faster with starting hypothesis [750, 1000]
-def gradientDescent(filename, alpha=0.1, max_iter=10000, threshold=0.001):
+def gradientDescent(filename, alpha=1.4, max_iter=1000, threshold=0.001):
     cost_J = float('inf')
     iter = 1
     Costs = []
-    Data, Y = load_data()
+    Data, Y = load_data(filename)
     # display_graph(Data, Y, 0)
     # display_graph(Data, Y, 1)
-    # Data = scale(Data, 0)
-    Data = select_single(Data, 1)
+    Data = scale(Data, 0)
+    Data = select_single(Data, 0)
     Hypothesis = [0.0, 0.0]
+
     while(True):
         error = computeErrors(Data, Y, Hypothesis)
         cost = computeCost(Data,Y,Hypothesis)
-        grandiant= computeGradient(Data,error)
+        grandiant = computeGradient(Data,error)
 
         if(cost_J<cost):
             print("Gradient descent terminating after %d iterations, new cost is higher(%f) from previous cost(%f)"% (iter + 1, cost, cost_J))
@@ -41,6 +42,7 @@ def gradientDescent(filename, alpha=0.1, max_iter=10000, threshold=0.001):
 
         Costs.append(cost)
         Hypothesis = updateHypothsis(Hypothesis, alpha, grandiant)
+        cost_J = cost
 
         if (iter > max_iter):
             print("Gradient descent terminating after %d iterations (max_iter)"% (iter + 1))
@@ -50,18 +52,22 @@ def gradientDescent(filename, alpha=0.1, max_iter=10000, threshold=0.001):
             print("Gradient descent terminating after %d iterations.Improvement was: %f – below threshold (%f)"% (iter + 1, abs(Costs[-1] - Costs[-2]), threshold))
             break
 
-        cost_J=cost
         iter+=1
-    print(computeCost(Data,Y, Hypothesis))
+    print(cost_J)
     return Costs, Hypothesis
 
 def display_graph(Data:list, Y:list, feature):
     data_values = [row[feature] for row in Data]
     y_values = [row[0] for row in Y]
     plt.plot(data_values, y_values, 'o')  # 'o' for scatter plot
-    plt.xlabel('Feature {}'.format(feature))
-    plt.ylabel('Label')
-    plt.title('Graph of feature {} against the label'.format(feature))
+    if feature == 0:
+        plt.title("New cost vs second hand cost")
+        plt.xlabel("New cost")
+        plt.ylabel("Second hand cost")
+    else:
+        plt.title("Phone age vs second hand cost")
+        plt.xlabel("Phone age")
+        plt.ylabel("Second hand cost")
     plt.grid(True)
     plt.show()
 
@@ -124,8 +130,7 @@ def updateHypothsis(Hypothesis, alpha, Gradient):
     return new
 
 if __name__ == '__main__':
-    costs, hypothesis = gradientDescent("smartphone.txt")
-
+    costs, hypothesis = gradientDescent("smartphone.txt", 1.4)
     plt.plot(costs)
     plt.xlabel('Iterations')
     plt.ylabel('Cost')
