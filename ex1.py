@@ -1,6 +1,4 @@
-import matplotlib.pyplot as plt
-
-def load_data(filename):
+def load_data():
     matrixD = []
     matrixY = []
     f = open(filename, 'r')
@@ -18,8 +16,7 @@ def load_data(filename):
 
     return [matrixD,matrixY]
 
-# alpha = 0.1 is optimal for feature 1 (no scaling)
-# alpha = 1.4 with scaling is optimal for feature 0 (converges faster with starting hypothesis [750, 1000]
+
 def gradientDescent(filename, alpha=1.4, max_iter=1000, threshold=0.001):
     cost_J = float('inf')
     iter = 1
@@ -107,17 +104,16 @@ def computeErrors (Data: list, Y:list, Hypothesis:list):
     for i in range(0, Data.__len__()):
         v.append(predict_value(Data[i], Hypothesis) - Y[i][0])
     return v
-
 def computeCost(Data:list , Y:list , Hypothesis:list):
     errors = 0
     v:list = computeErrors(Data,Y,Hypothesis)
     for i in range(0, (v.__len__())):
         errors += v[i]*v[i]
     return errors/(2*Data.__len__())
-
 def computeGradient(Data:list, Errors:list):
     gradiants = []
     g =0
+    print(Data.__len__() == Errors.__len__())
     for i in range(0,Data[0].__len__()):
         for j in range(0,Data.__len__()):
             g += Data[j][i]*Errors[j]
